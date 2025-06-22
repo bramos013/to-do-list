@@ -6,7 +6,12 @@ pipeline {
             steps {
                 script {
                     configFileProvider([configFile(fileId: '8f7d07ab-ce12-4ed6-ae31-fcd8535bcb2c', targetLocation: '.env')]) {
-                        sh 'docker build -t todo-list-app .'
+                        sh '''
+                            set -a # Export all variables
+                            source .env
+                            set +a
+                            docker build -t todo-list-app .
+                        '''
                     }
                 }
             }
@@ -34,6 +39,12 @@ pipeline {
                         docker run -d -p 8001:8000 --name todo-list-dev bramos013/todo-list-app:latest
                     '''
                 }
+            }
+        }
+
+        stage('Verify Environment') {
+            steps {
+                echo "DEPLOY_ENV: ${env.DEPLOY_ENV}"
             }
         }
 
