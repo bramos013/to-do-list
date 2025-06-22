@@ -44,7 +44,10 @@ pipeline {
                 script {
                     configFileProvider([configFile(fileId: '8f7d07ab-ce12-4ed6-ae31-fcd8535bcb2c', targetLocation: '.env')]) {
                         sh '''
-                        bash -c "set -a && source .env && set +a && echo DEPLOY_ENV is: \$DEPLOY_ENV"
+                    set -a
+                    . .env
+                    set +a
+                    echo "DEPLOY_ENV is: $DEPLOY_ENV"
                 '''
                     }
                 }
