@@ -7,9 +7,6 @@ pipeline {
                 script {
                     configFileProvider([configFile(fileId: '8f7d07ab-ce12-4ed6-ae31-fcd8535bcb2c', targetLocation: '.env')]) {
                         sh '''
-                            set -a # Export all variables
-                            source .env
-                            set +a
                             docker build -t todo-list-app .
                         '''
                     }
