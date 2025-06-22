@@ -29,14 +29,13 @@ pipeline {
         stage('Deploy to Development') {
             steps {
                 script {
-                    sh """
+                    sh '''
                         docker rm -f todo-list-dev
-                        docker run -d -p 8001:8000 --name todo-list-dev pcmadevops/todo-list-app:latest
-                    """
+                        docker run -d -p 8001:8000 --name todo-list-dev bramos013/todo-list-app:latest
+                    '''
                 }
             }
         }
-
     }
 }
 
