@@ -39,21 +39,6 @@ pipeline {
             }
         }
 
-        stage('Verify Environment') {
-            steps {
-                script {
-                    configFileProvider([configFile(fileId: '8f7d07ab-ce12-4ed6-ae31-fcd8535bcb2c', targetLocation: '.env')]) {
-                        sh '''
-                    set -a
-                    . .env
-                    set +a
-                    echo "DEPLOY_ENV is: $DEPLOY_ENV"
-                '''
-                    }
-                }
-            }
-        }
-
         stage('Deploy to Production') {
             when {
                 environment name: 'DEPLOY_ENV', value: 'production'
