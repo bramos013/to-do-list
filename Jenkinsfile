@@ -36,6 +36,31 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Production') {
+            when {
+                environment name: 'DEPLOY_ENV', value: 'production'
+            }
+            steps {
+                input message: 'Deploy to Production? (yes/no)'
+                script {
+                    def userInput = input(message: 'Deploy to Production? (yes/no)', ok: 'Deploy',
+                        submitterParameter: 'submitter')
+                    if (userInput == 'yes') {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                            sh """
+                                docker login -u '${DOCKERHUB_USER}' -p '${DOCKERHUB_PASS}'
+                                docker pull ${DOCKERHUB_USER}/todo-list-app:latest
+                                docker rm -f todo-list-app-prod
+                                docker run -d --name todo-list-app-prod -p 8000:8000 ${DOCKERHUB_USER}/todo-list-app:latest
+                            """
+                        }
+                    } else {
+                        currentBuild.result = 'ABORTED'
+                        error('Deploy to production cancelled')
+                    }
+                }
+            }
+        }
     }
 }
-
